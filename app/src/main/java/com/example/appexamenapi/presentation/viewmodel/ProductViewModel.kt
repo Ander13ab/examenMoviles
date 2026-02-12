@@ -7,7 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import com.example.appexamenapi.data.model.Post
-import com.example.appexamenapi.data.repository.PostRepository
+import perfetto.protos.UiState
 
 class PostViewModel : ViewModel() {
 
@@ -28,7 +28,7 @@ class PostViewModel : ViewModel() {
             try {
                 postList = repository.getPosts()
             } catch (e: Exception) {
-                e.printStackTrace()
+                // Log error o manejar el estado
             } finally {
                 isLoading = false
             }

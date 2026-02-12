@@ -1,6 +1,8 @@
 package com.example.appexamenapi.data.model
 
-data class Post(
+import com.squareup.moshi.Json
+
+data class ProductDto(
     val id: Int,
     val name: String,
     val description: String,
@@ -8,4 +10,5 @@ data class Post(
     val category: String,
     val image: String,
     val active: Boolean,
+    @Json(name = "portrait_path") val portraitPath: String? = null
 )
