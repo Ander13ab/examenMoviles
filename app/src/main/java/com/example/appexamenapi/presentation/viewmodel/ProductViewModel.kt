@@ -1,36 +1,33 @@
 package com.example.appexamenapi.presentation.viewmodel
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.appexamenapi.data.model.ProductDto
+import com.example.appexamenapi.data.remote.ProductNetwork
+import com.example.appexamenapi.data.repository.ProductRepository
 import kotlinx.coroutines.launch
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
-import com.example.appexamenapi.data.model.Post
-import perfetto.protos.UiState
 
-class PostViewModel : ViewModel() {
+class ProductViewModel : ViewModel() {
 
-    private val repository = PostRepository()
+    private val repository = ProductRepository(ProductNetwork.api)
 
-    var postList by mutableStateOf<List<Post>>(emptyList())
-        private set
-
-    var isLoading by mutableStateOf(true)
+    var state by mutableStateOf<UiState<List<ProductDto>>>(UiState.Loading)
         private set
 
     init {
-        fetchPosts()
+        loadProducts()
     }
 
-    private fun fetchPosts() {
+    fun loadProducts(page: Int = 1) {
         viewModelScope.launch {
-            try {
-                postList = repository.getPosts()
+            state = UiState.Loading
+            state = try {
+                UiState.Success(repository.getProducts(page))
             } catch (e: Exception) {
-                // Log error o manejar el estado
-            } finally {
-                isLoading = false
+                UiState.Error(e.message ?: "Error cargando productos")
             }
         }
     }
